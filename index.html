@@ -20,9 +20,15 @@
             --light-bg: #4A2B64; /* Чуть светлее фон для секций */
             --white: #ffffff;
             --dark-text: #2D3748; /* Для светлых секций */
+            --nav-height: 70px; /* Высота меню для расчетов */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth; /* Плавная прокрутка */
+            scroll-padding-top: var(--nav-height); /* Чтобы заголовок не прятался под меню при клике */
+        }
 
         body {
             font-family: 'Nunito', sans-serif;
@@ -30,12 +36,68 @@
             color: var(--text);
             line-height: 1.6;
             overflow-x: hidden;
+            padding-top: var(--nav-height); /* Отступ, чтобы контент не наезжал на меню */
         }
 
         h1, h2, h3 { font-family: 'Fredoka', sans-serif; color: var(--accent); }
         h2.section-title, footer h2.section-title { color: var(--white); }
 
         .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+        /* --- НАВИГАЦИЯ (НОВОЕ) --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background: rgba(52, 31, 71, 0.9); /* Полупрозрачный фон */
+            backdrop-filter: blur(10px); /* Эффект размытия */
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+        
+        /* Линия подчеркивания при наведении */
+        .nav-links a::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s;
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
 
         /* --- КНОПКИ --- */
         .btn {
@@ -73,7 +135,7 @@
         /* --- ГЕРОЙ --- */
         header {
             background: linear-gradient(135deg, var(--primary) 0%, #6C3D8F 100%);
-            padding: 100px 0 80px;
+            padding: 80px 0 80px; /* Чуть уменьшил верхний паддинг, так как есть меню */
             color: var(--white);
             border-bottom-left-radius: 50px;
             border-bottom-right-radius: 50px;
@@ -92,7 +154,7 @@
         .hero-text h1 {
             font-size: 3.5rem;
             line-height: 1.2;
-            margin-bottom: 5px; /* Уменьшил отступ после h1 */
+            margin-bottom: 5px; 
             color: var(--white);
         }
 
@@ -100,8 +162,8 @@
             font-family: 'Nunito', sans-serif;
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--accent); /* Бирюзовое имя */
-            margin-bottom: 20px; /* Отступ перед описанием */
+            color: var(--accent); 
+            margin-bottom: 20px; 
             display: block;
         }
 
@@ -217,7 +279,7 @@
 
         .icon { font-size: 3rem; margin-bottom: 20px; display: block; color: var(--accent); }
 
-        /* --- КВАЛИФИКАЦИЯ (НОВЫЙ ВИД) --- */
+        /* --- КВАЛИФИКАЦИЯ --- */
         .certs {
             background-color: var(--light-bg);
             padding: 60px 0;
@@ -275,12 +337,29 @@
             .review-card { flex: 0 0 260px; } 
 
             .hero-text { text-align: left; }
+
+            /* Адаптация меню для мобильных */
+            .navbar { height: auto; padding: 10px 0; }
+            .nav-links { gap: 15px; font-size: 0.8rem; flex-wrap: wrap; justify-content: center; }
+            .nav-links a { font-size: 0.9rem; }
+            html { scroll-padding-top: 110px; } /* Увеличиваем отступ прокрутки, т.к. меню может стать выше */
+            body { padding-top: 80px; }
         }
     </style>
 </head>
 <body>
 
-    <header>
+    <nav class="navbar">
+        <ul class="nav-links">
+            <li><a href="#hero">Главная</a></li>
+            <li><a href="#reviews">Отзывы</a></li>
+            <li><a href="#features">Методика</a></li>
+            <li><a href="#certs">Дипломы</a></li>
+            <li><a href="#contact">Контакты</a></li>
+        </ul>
+    </nav>
+
+    <header id="hero">
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
@@ -309,7 +388,7 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container" id="reviews">
         <section class="reviews-section">
             <h2 class="section-title">Что говорят родители</h2>
             <div class="carousel-container">
@@ -355,7 +434,7 @@
         </section>
     </div>
 
-    <section class="features">
+    <section class="features" id="features">
         <div class="container">
             <h2 class="section-title">Моя формула успеха</h2>
             <div class="features-grid">
@@ -379,7 +458,7 @@
         </div>
     </section>
 
-    <div class="container">
+    <div class="container" id="certs">
         <section class="certs">
             <h3>Моя квалификация</h3>
             <div class="qual-text">Филолог, преподаватель английского языка</div>
