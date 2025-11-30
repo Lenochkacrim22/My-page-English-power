@@ -24,10 +24,13 @@
             --white: #ffffff;
             --nav-height: 70px; 
             
-            /* Цвета для колеса (Теперь используются в JS) */
-            --wheel-color-1: var(--accent); 
-            --wheel-color-2: var(--secondary); 
-            --wheel-color-3: #FFD700; /* gold */
+            /* Цвета для колеса */
+            --wheel-color-purple: #9B59B6; /* Фиолетовый */
+            --wheel-color-pink: #FF69B4;   /* Розовый */
+            --wheel-color-turquoise: #1ABC9C; /* Бирюзовый */
+            --wheel-color-yellow: #FFD700;  /* Жёлтый */
+            --wheel-color-green: #2ECC71;   /* Зелёный */
+            --wheel-color-blue: #3498DB;    /* Голубой */
         }
 
         /* --- БАЗА И СБРОС СТИЛЕЙ --- */
@@ -189,16 +192,11 @@
             background-color: var(--white);
             border: 8px solid var(--accent);
             overflow: hidden;
+            /* Предполагаем, что изображение лежит на хостинге или в папке */
             background-image: url('https://www.dropbox.com/scl/fi/8fh08g14chp9g2jncpc2t/IMG_20251124_130918.png?rlkey=iktjfrc7fetud1toome697boq&st=t661i2i6&raw=1');
             background-size: cover;
             background-position: center; 
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
+            /* Анимация float удалена */
         }
 
         /* --- СТАТИСТИКА --- */
@@ -341,15 +339,35 @@
         .social-btn:hover { transform: scale(1.1); }
 
         /* --- КОЛЕСО ФОРТУНЫ --- */
+        @keyframes jiggle {
+            0% { transform: rotate(0deg) scale(1.0); }
+            25% { transform: rotate(5deg) scale(1.05); }
+            50% { transform: rotate(-5deg) scale(1.0); }
+            75% { transform: rotate(3deg) scale(1.03); }
+            100% { transform: rotate(0deg) scale(1.0); }
+        }
+
         .game-trigger {
             position: fixed; bottom: 20px; right: 20px;
-            width: 50px; height: 50px; background: var(--secondary);
-            color: var(--white); border-radius: 50%; display: flex; 
-            align-items: center; justify-content: center; font-size: 24px; 
-            cursor: pointer; box-shadow: 0 0 15px rgba(52, 152, 219, 0.6);
-            transition: transform 0.2s, background 0.2s; z-index: 999; border: 2px solid var(--white);
+            width: 60px; height: 60px; 
+            background: var(--wheel-color-yellow); /* Желтый фон */
+            color: var(--bg); /* Темный цвет иконки */
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 30px; /* Увеличенный размер иконки */
+            cursor: pointer; 
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            transition: transform 0.2s, background 0.2s; 
+            z-index: 999; 
+            border: 2px solid var(--white);
+            animation: jiggle 2s ease infinite; 
         }
-        .game-trigger:hover { transform: scale(1.1); }
+        .game-trigger:hover { 
+            transform: scale(1.1) rotate(0deg); 
+            animation: none; 
+        }
 
         /* МОДАЛЬНОЕ ОКНО КОЛЕСА */
         .modal-overlay {
@@ -366,19 +384,17 @@
         }
         .wheel-wrapper {
             position: relative; 
-            /* *** ИСПРАВЛЕНИЕ: Центрирование колеса *** */
             margin: 20px auto; 
             width: 320px; height: 320px;
             border-radius: 50%;
-            border: 5px solid var(--accent);
-            box-shadow: 0 0 30px rgba(26, 188, 156, 0.4);
+            /* Рамка удалена */
         }
         .wheel-pointer {
             position: absolute; top: -10px; left: 50%;
             transform: translateX(-50%);
             width: 0; height: 0;
             border-left: 15px solid transparent; border-right: 15px solid transparent;
-            border-bottom: 30px solid var(--wheel-color-3); /* Gold */
+            border-bottom: 30px solid var(--wheel-color-yellow); /* Желтый */
             z-index: 10;
         }
         #wheel {
@@ -410,7 +426,7 @@
         }
         .coupon-code {
             font-size: 1.5rem;
-            color: var(--wheel-color-3);
+            color: var(--wheel-color-yellow); /* Желтый для кода */
             font-family: 'Fredoka', sans-serif;
             font-weight: 700;
         }
@@ -451,7 +467,7 @@
             <li><a href="#features">Методика</a></li>
             <li><a href="#reviews">Отзывы</a></li>
             <li><a href="#certs">Дипломы</a></li>
-            <li><a href="#contact">Контакты</a></li>
+            <li><a href="#contact">Контакты</a></li> 
             <li><a href="https://lenochkacrim22.github.io/elena_onlineshop/" target="_blank" class="btn-nav">КУРСЫ</a></li>
         </ul>
     </nav>
@@ -513,7 +529,7 @@
                     <h1>English Super Power <br>для детей и подростков</h1>
                     <span class="name">Чистякова Елена Олеговна</span>
                     <p>Уроки, на которых не скучно. Методика, которая работает. Педагог, который понимает.</p>
-                    <a href="#contact" class="btn">Связаться со мной</a>
+                    <a href="#contact" class="btn">Связаться со мной</a> 
                 </div>
                 <div class="hero-image">
                     <div class="photo-circle" title="Елена"></div>
@@ -628,7 +644,7 @@
         </section>
     </div>
 
-    <footer>
+    <footer id="contact"> 
         <div class="container">
             <h2 class="section-title">Давайте знакомиться!</h2>
             <p>Напишите мне, чтобы обсудить цели вашего ребенка и подобрать удобное время.</p>
@@ -648,13 +664,14 @@
     </footer>
 
     <script>
-        // СЕКЦИИ КОЛЕСА
+        // СЕКЦИИ КОЛЕСА (6 секторов)
         const sectors = [
             { label: "СКИДКА 10% (Мес)", text: "Скидка на месяц 10%" },
             { label: "БЕСПЛАТНЫЙ УРОК", text: "Бесплатный урок" }, 
             { label: "СКИДКА 25% (Мес)", text: "Скидка на месяц 25%" },
             { label: "СКИДКА 10% (Кино)", text: "Скидка на киноклуб 10%" },
-            { label: "СКИДКА 25% (Кино)", text: "Скидка на киноклуб 25%" }
+            { label: "СКИДКА 25% (Кино)", text: "Скидка на киноклуб 25%" },
+            { label: "СКИДКА 5% (Мес)", text: "Скидка на месяц 5%" }
         ];
 
         // Инициализация переменных и DOM элементов
@@ -686,19 +703,25 @@
         const radius = diameter / 2;
         const PI = Math.PI;
         const TAU = 2 * PI;
-        const arc = TAU / sectors.length;
+        const arc = TAU / sectors.length; 
         
         // Получаем актуальные значения CSS переменных для цветов
         const rootStyle = getComputedStyle(document.documentElement);
-        const color1 = rootStyle.getPropertyValue('--wheel-color-1').trim(); // Бирюзовый
-        const color2 = rootStyle.getPropertyValue('--wheel-color-2').trim(); // Синий
-        const color3 = rootStyle.getPropertyValue('--wheel-color-3').trim(); // Золотой
+        // !!! ИСПРАВЛЕНИЕ: Извлекаем цвет фона для линий Canvas
+        const colorBg = rootStyle.getPropertyValue('--bg').trim(); 
         
-        // Задаем порядок цветов
-        const sectorColors = [color1, color3, color2, color1, color2]; 
+        const colorPurple = rootStyle.getPropertyValue('--wheel-color-purple').trim();
+        const colorPink = rootStyle.getPropertyValue('--wheel-color-pink').trim();
+        const colorTurquoise = rootStyle.getPropertyValue('--wheel-color-turquoise').trim();
+        const colorYellow = rootStyle.getPropertyValue('--wheel-color-yellow').trim();
+        const colorGreen = rootStyle.getPropertyValue('--wheel-color-green').trim();
+        const colorBlue = rootStyle.getPropertyValue('--wheel-color-blue').trim();
+        
+        // Задаем порядок цветов (6 цветов)
+        const sectorColors = [colorPurple, colorPink, colorTurquoise, colorYellow, colorGreen, colorBlue]; 
 
 
-        // 1. Отрисовка колеса (ФИНАЛЬНО ИСПРАВЛЕНА: Цвета и Логика поворота текста)
+        // 1. Отрисовка колеса (с горизонтальным текстом)
         function drawWheel() {
             sectors.forEach((sector, i) => {
                 const startAngle = i * arc;
@@ -708,7 +731,7 @@
                 
                 // Рисуем сектор
                 ctx.beginPath();
-                ctx.fillStyle = sectorColors[i]; 
+                ctx.fillStyle = sectorColors[i % sectorColors.length]; 
                 ctx.moveTo(radius, radius);
                 ctx.arc(radius, radius, radius, startAngle, endAngle);
                 ctx.lineTo(radius, radius);
@@ -722,31 +745,39 @@
                 ctx.rotate(angle); 
                 
                 ctx.textAlign = "right"; 
-                ctx.fillStyle = "#110A1F"; // Темный текст
-                ctx.font = "bold 13px Fredoka"; // Слегка уменьшил шрифт для лучшей читаемости
+                ctx.fillStyle = "#110A1F"; 
+                ctx.font = "bold 16px Nunito"; 
                 
-                // Разделяем текст, если он длинный
+                // Разделяем текст на строки
                 const words = sector.label.split(' ');
-                let line = '';
                 const lineSpacing = 16;
-                let yPos = - (words.length / 2) * lineSpacing + 10;
                 
-                // Проходим по словам и рисуем их построчно
+                // Вычисляем начальную позицию Y
+                let startY = - (words.length * lineSpacing) / 2 + (lineSpacing * 0.8);
+                
                 for (let j = 0; j < words.length; j++) {
-                    const testLine = line + words[j] + ' ';
                     
                     // Поворачиваем текст на 90 градусов (PI/2), чтобы он был горизонтальным относительно радиуса
                     ctx.save();
                     ctx.rotate(PI / 2); 
                     
                     // Рисуем, отступая от центра 
-                    ctx.fillText(words[j], radius - 20, yPos); 
+                    const textX = radius * 0.7; 
+                    ctx.fillText(words[j], textX, startY + (j * lineSpacing)); 
                     
                     ctx.restore();
-                    yPos += lineSpacing;
                 }
                 
                 ctx.restore();
+                
+                // Рисуем разделительные линии 
+                ctx.strokeStyle = colorBg; // !!! ИСПРАВЛЕНИЕ: Используем переменную JS
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(radius, radius);
+                ctx.arc(radius, radius, radius, startAngle, endAngle);
+                ctx.closePath();
+                ctx.stroke();
             });
         }
         
@@ -757,6 +788,7 @@
             if (hasSpun && storedPrize) {
                 showWin(storedPrize, false);
             } else {
+                wheelCanvas.style.transform = 'rotate(0deg)';
                 wheelScreen.style.display = 'block';
                 resultScreen.style.display = 'none';
                 spinBtn.disabled = false;
@@ -765,8 +797,11 @@
             modal.classList.add('active');
         }
 
-        trigger.addEventListener('click', checkAndOpenModal);
-
+        // *** ПРИВЯЗКА КНОПКИ: Работает корректно ***
+        if (trigger) {
+             trigger.addEventListener('click', checkAndOpenModal);
+        }
+        
         closeBtn.addEventListener('click', () => {
             modal.classList.remove('active');
         });
@@ -788,9 +823,9 @@
             const degreesPerSector = 360 / sectors.length;
             const spins = 5; 
             
-            // Устанавливаем целевое вращение так, чтобы указатель попал в середину сектора
+            // Расчет конечного положения для попадания в центр сектора
             const targetPosition = (sectorIndex * degreesPerSector) + (degreesPerSector / 2);
-            // 90 градусов - это угол указателя (вверх), поэтому мы добавляем его к 360 - targetPosition
+            // Добавляем 90 градусов (поправка на указатель) + случайное смещение
             const targetRotation = (spins * 360) + (360 - targetPosition) + 90 + (Math.random() * 10 - 5); 
             
             wheelCanvas.style.transform = `rotate(${targetRotation}deg)`;
@@ -821,12 +856,12 @@
                     particleCount: 150,
                     spread: 70,
                     origin: { y: 0.6 },
-                    colors: [color1, color2, color3]
+                    colors: sectorColors 
                 });
             }
         }
 
-        // 4. Скачивание купона
+        // 4. Скачивание купона (Использует html2canvas)
         document.getElementById('downloadCoupon').addEventListener('click', () => {
             const couponElement = document.getElementById('coupon');
             
@@ -852,7 +887,6 @@
             hasSpun = false;
             storedPrize = null;
             
-            // Сброс визуального состояния колеса
             wheelCanvas.style.transform = 'rotate(0deg)';
             
             checkAndOpenModal();
