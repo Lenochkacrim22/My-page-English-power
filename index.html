@@ -7,7 +7,10 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
     <style>
         /* --- НАСТРОЙКИ ЦВЕТОВ И БАЗЫ --- */
@@ -19,15 +22,20 @@
             --bg: #341F47;      /* Темно-фиолетовый фон */
             --light-bg: #4A2B64; /* Чуть светлее фон для секций */
             --white: #ffffff;
-            --dark-text: #2D3748; /* Для светлых секций */
-            --nav-height: 70px; /* Высота меню для расчетов */
+            --nav-height: 70px; 
+            
+            /* Цвета для колеса */
+            --wheel-color-1: var(--accent); 
+            --wheel-color-2: var(--secondary); 
+            --wheel-color-3: #FFD700; /* gold */
         }
 
+        /* --- БАЗА И СБРОС СТИЛЕЙ --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         html {
-            scroll-behavior: smooth; /* Плавная прокрутка */
-            scroll-padding-top: var(--nav-height); /* Чтобы заголовок не прятался под меню при клике */
+            scroll-behavior: smooth; 
+            scroll-padding-top: var(--nav-height); 
         }
 
         body {
@@ -36,70 +44,57 @@
             color: var(--text);
             line-height: 1.6;
             overflow-x: hidden;
-            padding-top: var(--nav-height); /* Отступ, чтобы контент не наезжал на меню */
+            padding-top: var(--nav-height); 
         }
 
         h1, h2, h3 { font-family: 'Fredoka', sans-serif; color: var(--accent); }
         h2.section-title, footer h2.section-title { color: var(--white); }
 
         .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-
-        /* --- НАВИГАЦИЯ (НОВОЕ) --- */
+        
+        /* --- НАВИГАЦИЯ --- */
         .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: var(--nav-height);
-            background: rgba(52, 31, 71, 0.9); /* Полупрозрачный фон */
-            backdrop-filter: blur(10px); /* Эффект размытия */
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-height);
+            background: rgba(52, 31, 71, 0.95); 
+            backdrop-filter: blur(10px); 
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            padding: 0 10px;
         }
 
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 30px;
-        }
+        .nav-links { display: flex; list-style: none; gap: 30px; align-items: center; }
 
         .nav-links a {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: color 0.3s;
-            position: relative;
+            color: var(--text); text-decoration: none; font-weight: 700;
+            font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px;
+            transition: color 0.3s; position: relative;
         }
 
-        .nav-links a:hover {
-            color: var(--accent);
-        }
+        .nav-links a:hover { color: var(--accent); }
         
-        /* Линия подчеркивания при наведении */
         .nav-links a::after {
-            content: '';
-            display: block;
-            width: 0;
-            height: 2px;
-            background: var(--accent);
-            transition: width 0.3s;
-            position: absolute;
-            bottom: -5px;
-            left: 0;
+            content: ''; display: block; width: 0; height: 2px;
+            background: var(--accent); transition: width 0.3s;
+            position: absolute; bottom: -5px; left: 0;
         }
 
-        .nav-links a:hover::after {
-            width: 100%;
+        .nav-links a:hover::after { width: 100%; }
+        
+        .nav-links .btn-nav {
+            background-color: var(--secondary); color: var(--white);
+            padding: 6px 15px; border-radius: 50px;
+            font-size: 0.9rem; text-transform: uppercase;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.4);
+            transition: background-color 0.3s, transform 0.3s;
+            text-decoration: none; 
+        }
+        .nav-links .btn-nav:hover {
+            background-color: #5DADE2;
+            transform: translateY(-2px);
         }
 
-        /* --- КНОПКИ --- */
+        /* --- КНОТКИ --- */
         .btn {
             display: inline-block;
             padding: 12px 30px;
@@ -131,11 +126,27 @@
             background: var(--accent);
             color: var(--white);
         }
+        
+        .btn-reset {
+            background: none;
+            color: #E74C3C;
+            border: 1px solid #E74C3C;
+            padding: 5px 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-reset:hover {
+            background: #E74C3C;
+            color: var(--white);
+        }
+
 
         /* --- ГЕРОЙ --- */
         header {
             background: linear-gradient(135deg, var(--primary) 0%, #6C3D8F 100%);
-            padding: 80px 0 80px; /* Чуть уменьшил верхний паддинг, так как есть меню */
+            padding: 80px 0 80px; 
             color: var(--white);
             border-bottom-left-radius: 50px;
             border-bottom-right-radius: 50px;
@@ -197,6 +208,8 @@
             gap: 30px;
             margin-top: -40px;
             flex-wrap: wrap;
+            position: relative; 
+            z-index: 10;
         }
 
         .stat-card {
@@ -224,22 +237,22 @@
         
         .carousel-container {
             display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
+            overflow-x: auto; 
+            scroll-snap-type: x mandatory; 
             gap: 20px;
             padding: 20px 0 40px; 
             -webkit-overflow-scrolling: touch; 
         }
         
         .carousel-container::-webkit-scrollbar { display: none; }
-        .carousel-container { -ms-overflow-style: none; scrollbar-width: none; }
+        .carousel-container { -ms-overflow-style: none; scrollbar-width: none; } 
 
         .review-card {
             flex: 0 0 300px; 
             background: var(--light-bg);
             padding: 25px;
             border-radius: 20px;
-            scroll-snap-align: center;
+            scroll-snap-align: center; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             border-left: 5px solid var(--accent);
             color: var(--text);
@@ -261,7 +274,7 @@
         /* --- ПРЕИМУЩЕСТВА --- */
         .features { padding: 60px 0; }
         .section-title { text-align: center; font-size: 2.5rem; margin-bottom: 50px; }
-        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
 
         .feature-card {
             background: var(--light-bg);
@@ -296,7 +309,7 @@
             margin: 20px 0 30px;
         }
 
-        /* --- КОНТАКТЫ / FOOTER --- */
+        /* --- КОНТАКТЫ / footer --- */
         footer { text-align: center; padding-bottom: 50px; }
 
         .social-links {
@@ -327,6 +340,88 @@
 
         .social-btn:hover { transform: scale(1.1); }
 
+        /* --- КОЛЕСО ФОРТУНЫ --- */
+        .game-trigger {
+            position: fixed; bottom: 20px; right: 20px;
+            width: 50px; height: 50px; background: var(--secondary);
+            color: var(--white); border-radius: 50%; display: flex; 
+            align-items: center; justify-content: center; font-size: 24px; 
+            cursor: pointer; box-shadow: 0 0 15px rgba(52, 152, 219, 0.6);
+            transition: transform 0.2s, background 0.2s; z-index: 999; border: 2px solid var(--white);
+        }
+        .game-trigger:hover { transform: scale(1.1); }
+
+        /* МОДАЛЬНОЕ ОКНО КОЛЕСА */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.8); z-index: 2000; display: none; 
+            align-items: center; justify-content: center; backdrop-filter: blur(5px);
+        }
+        .modal-overlay.active { display: flex; }
+        .game-container {
+            background: var(--bg); border: 3px solid var(--secondary);
+            box-shadow: 0 0 40px rgba(52, 152, 219, 0.4); padding: 30px;
+            border-radius: 15px; text-align: center; position: relative;
+            max-width: 90%; 
+        }
+        .wheel-wrapper {
+            position: relative; margin: 20px auto;
+            width: 320px; height: 320px;
+            border-radius: 50%;
+            border: 5px solid var(--accent);
+            box-shadow: 0 0 30px rgba(26, 188, 156, 0.4);
+        }
+        .wheel-pointer {
+            position: absolute; top: -10px; left: 50%;
+            transform: translateX(-50%);
+            width: 0; height: 0;
+            border-left: 15px solid transparent; border-right: 15px solid transparent;
+            border-bottom: 30px solid var(--wheel-color-3); /* Gold */
+            z-index: 10;
+        }
+        #wheel {
+            transition: transform 5s cubic-bezier(0.2, 0.7, 0.4, 1);
+        }
+        .spin-btn {
+            background-color: var(--secondary); color: var(--white);
+            padding: 12px 25px; border-radius: 50px; font-weight: 700;
+            text-transform: uppercase; border: none; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.5);
+            margin-top: 10px;
+        }
+        .spin-btn:disabled { background: #555; cursor: not-allowed; }
+
+        /* СТИЛИ КУПОНА */
+        .coupon-wrapper {
+            border: 3px dashed var(--accent);
+            background: var(--light-bg);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(26, 188, 156, 0.5);
+        }
+        .coupon-prize {
+            font-size: 2rem;
+            color: var(--secondary);
+            font-family: 'Fredoka', sans-serif;
+            margin: 10px 0;
+        }
+        .coupon-code {
+            font-size: 1.5rem;
+            color: var(--wheel-color-3);
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+        }
+        .coupon-footer { font-size: 0.8rem; margin-top: 10px; }
+        .save-btn {
+            display: flex; align-items: center; justify-content: center;
+            background-color: var(--primary); color: var(--white);
+            padding: 10px 20px; border-radius: 50px; border: none;
+            font-weight: 700; cursor: pointer; gap: 8px;
+        }
+        .save-btn svg { fill: var(--white); }
+
+
         /* --- АДАПТИВНОСТЬ --- */
         @media (max-width: 768px) {
             .hero-text h1 { font-size: 2.2rem; }
@@ -336,14 +431,13 @@
             .stats { margin-top: 30px; }
             .review-card { flex: 0 0 260px; } 
 
-            .hero-text { text-align: left; }
+            .hero-text { text-align: center; } 
 
-            /* Адаптация меню для мобильных */
             .navbar { height: auto; padding: 10px 0; }
             .nav-links { gap: 15px; font-size: 0.8rem; flex-wrap: wrap; justify-content: center; }
             .nav-links a { font-size: 0.9rem; }
-            html { scroll-padding-top: 110px; } /* Увеличиваем отступ прокрутки, т.к. меню может стать выше */
-            body { padding-top: 80px; }
+            html { scroll-padding-top: 110px; } 
+            body { padding-top: 80px; } 
         }
     </style>
 </head>
@@ -352,13 +446,64 @@
     <nav class="navbar">
         <ul class="nav-links">
             <li><a href="#hero">Главная</a></li>
-            <li><a href="#reviews">Отзывы</a></li>
             <li><a href="#features">Методика</a></li>
+            <li><a href="#reviews">Отзывы</a></li>
             <li><a href="#certs">Дипломы</a></li>
             <li><a href="#contact">Контакты</a></li>
+            <li><a href="https://lenochkacrim22.github.io/elena_onlineshop/" target="_blank" class="btn-nav">КУРСЫ</a></li>
         </ul>
     </nav>
 
+    <div class="game-trigger" id="gameTrigger" title="Испытай удачу">
+        🎁
+    </div>
+
+    <div class="modal-overlay" id="gameModal">
+        <div class="game-container">
+            <div class="close-modal" id="closeModal" style="position: absolute; top: 10px; right: 20px; font-size: 30px; color: var(--white); cursor: pointer;">&times;</div>
+            
+            <div id="wheelScreen">
+                <h2 class="section-title" style="color: var(--secondary); margin-bottom: 5px;">Колесо Фортуны</h2>
+                <p style="margin-bottom: 20px;">Крути и выигрывай скидки на занятия!</p>
+                
+                <div class="wheel-wrapper">
+                    <div class="wheel-pointer"></div>
+                    <canvas id="wheel" width="320" height="320"></canvas>
+                </div>
+                
+                <button class="spin-btn" id="spinBtn">КРУТИТЬ!</button>
+            </div>
+
+            <div id="resultScreen" style="display: none;">
+                <h2 class="section-title" style="color: var(--secondary); margin-bottom: 5px;">Поздравляем!</h2>
+                <p style="margin-bottom: 15px;">Вы выиграли приз:</p>
+                
+                <div class="coupon-wrapper" id="coupon">
+                    <div class="coupon-header" style="color: var(--accent); font-weight: 700;">Super English Tutor</div>
+                    <div class="coupon-body">
+                        <div>ВАШ ВЫИГРЫШ:</div>
+                        <div class="coupon-prize" id="prizeText"></div>
+                        <div class="coupon-code" id="uniqueCode"></div>
+                        <div class="coupon-footer">
+                            Сделайте скриншот или сохраните купон.<br>
+                            Покажите его при записи.
+                        </div>
+                    </div>
+                </div>
+
+                <button class="save-btn" id="downloadCoupon">
+                    <svg style="width:20px;height:20px" viewBox="0 0 24 24"><path fill="currentColor" d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" /></svg>
+                    Скачать купон
+                </button>
+                
+                <button class="btn-reset" id="resetCoupon" style="display: none;">
+                    Сбросить купон (Только для теста)
+                </button>
+            </div>
+
+        </div>
+    </div>
+    
     <header id="hero">
         <div class="container">
             <div class="hero-content">
@@ -378,12 +523,12 @@
     <div class="container">
         <div class="stats">
             <div class="stat-card">
-                <span class="stat-number">15 лет</span>
-                <span class="stat-label">Опыта работы</span>
+                <span class="stat-number">15</span>
+                <span class="stat-label">ЛЕТ ОПЫТА РАБОТЫ</span>
             </div>
             <div class="stat-card">
-                <span class="stat-number">∞</span>
-                <span class="stat-label">Игр и интерактива</span>
+                <span class="stat-number">&infin;</span>
+                <span class="stat-label">ИГР И ИНТЕРАКТИВА</span>
             </div>
         </div>
     </div>
@@ -394,7 +539,19 @@
             <div class="carousel-container">
                 
                 <div class="review-card">
-                    <p>"Елена, профессионал своего дела!!! До знакомства с ней, мы с дочерью поменяли четырех учителей, но результата которого хотелось, так и не получили. Дочь за год достигла очень хороших результатов в английском. Ей стало интересно заниматься. На уроки готовилась всегда с удовольствием. У Елены разработана своя методика обучения: уроки построены с учетом интересов современных детей и технологий)), что тоже очень порадовало. На сегодняшний момент дочь без проблем читает книги на английском языке, смотрит фильмы без перевода. Ну, а школьный английский для нее сейчас вообще не проблема. Спасибо большое нашему великолепному Учителю!"</p>
+                    <p>"Для меня показателем является заинтересовать ребенка. Сын с удовольствием занимается и делает домашнее задание. Урок составлен всегда индивидуально, очень интересно... Результат не заставил себя ждать, как мама, я вижу результаты в оценках, а самое главное знаниях языка у своего сына. Спасибо большое!!!"</p>
+                    <span class="review-author">Алёна</span>
+                    <span class="review-child">Мама Ромы, 9 лет</span>
+                </div>
+
+                <div class="review-card">
+                    <p>"Елена, хочу поблагодарить Вас за терпение и старания обучать моего трудного ребенка! Несмотря на его лень и не желание, Вам все-таки удалось организовать грамотный подход и донести до него знания! Рекомендую Вас всем знакомым, Вы настоящий учитель-профессионал!"</p>
+                    <span class="review-author">Александра</span>
+                    <span class="review-child">Довольный родитель</span>
+                </div>
+
+                <div class="review-card">
+                    <p>"Елена, профессионал своего дела!!! До знакомства с ней, мы с дочерью поменяли четырех учителей, но результата которого хотелось, так и не получили. Дочь за год достигла очень хороших результатов в английском. Ей стало интересно заниматься... Спасибо большое нашему великолепному Учителю!"</p>
                     <span class="review-author">Ольга</span>
                     <span class="review-child">Мама Дарьи</span>
                 </div>
@@ -404,21 +561,13 @@
                     <span class="review-author">Мария К.</span>
                     <span class="review-child">Мама Артёма, 12 лет</span>
                 </div>
+                
                 <div class="review-card">
-                    <p>"Идеальный подход к подросткам. Нет ощущения 'школьной парты', общение на равных, но с большим уважением и пользой."</p>
-                    <span class="review-author">Ольга В.</span>
-                    <span class="review-child">Мама Алисы, 14 лет</span>
-                </div>
-                <div class="review-card">
-                    <p>"Очень нравится, что уроки разнообразные. Мы пробовали много репетиторов, но только здесь ребенок реально заговорил."</p>
-                    <span class="review-author">Дмитрий С.</span>
-                    <span class="review-child">Папа Игоря, 10 лет</span>
-                </div>
-                <div class="review-card">
-                    <p>"Оба моих ребёнка занимаются английским языком у Елены. Уроки и домашнее задание очень интересные и полезные, с разнообразной подачей материала. Все задания выполняют сами, мы вообще не помогаем. Благодаря занятиям они лучшие в классе на уроках. Сын написал ВПР на отлично!!! У обоих твёрдая пятёрка по английскому языку в школе!!! Спасибо за профессионализм, терпение и умение найти подход к каждому ребёнку."</p>
+                    <p>"Оба моих ребёнка занимаются английским языком у Елены. Уроки и домашнее задание очень интересные и полезные, с разнообразной подачей материала... Сын написал ВПР на отлично!!! У обоих твёрдая пятёрка по английскому языку в школе!!! Спасибо за профессионализм..."</p>
                     <span class="review-author">Оксана</span>
                     <span class="review-child">Мама Максима и Лизы</span>
                 </div>
+                
                 <div class="review-card">
                     <p>"Занималась с Леной и осталась очень довольна 🙂 Уроки были интересными и насыщенными, благодаря чему я значительно улучшила свои знания языка 👆 Лена всегда поддерживал атмосферу доверия и понимания, что сделало обучение очень комфортным 🫂 Рекомендую тем, кто хочет повысить уровень английского!"</p>
                     <span class="review-author">Даша</span>
@@ -426,11 +575,18 @@
                 </div>
 
                 <div class="review-card">
-                    <p>"Елена, хочу поблагодарить Вас за терпение и старания обучать моего трудного ребенка! Несмотря на его лень и не желание, Вам все-таки удалось организовать грамотный подход и донести до него знания! Рекомендую Вас всем знакомым, Вы настоящий учитель-профессионал!"</p>
-                    <span class="review-author">Александра</span>
-                    <span class="review-child">Довольный родитель</span>
+                    <p>"Идеальный подход к подросткам. Нет ощущения 'школьной парты', общение на равных, но с большим уважением и пользой."</p>
+                    <span class="review-author">Ольга В.</span>
+                    <span class="review-child">Мама Алисы, 14 лет</span>
                 </div>
-            </div>
+                
+                <div class="review-card">
+                    <p>"Очень нравится, что уроки разнообразные. Мы пробовали много репетиторов, но только здесь ребенок реально заговорил."</p>
+                    <span class="review-author">Дмитрий С.</span>
+                    <span class="review-child">Папа Игоря, 10 лет</span>
+                </div>
+
+                </div>
         </section>
     </div>
 
@@ -451,9 +607,13 @@
                 <div class="feature-card">
                     <span class="icon">🧩</span>
                     <h3>Прокачка Soft Skills</h3>
-                    <p>Учимся работать над совместными проектами онлайн, развиваем эмоциональный интеллект, критическое мышление и коммуникативные навыки. Уроки структурны и визуально притягательны.</p>
+                    <p>Учимся работать над совместными проектами онлайн, развиваем эмоциональный интеллект, критическое мышление и коммуникативные навыки.</p>
                 </div>
-                
+                <div class="feature-card">
+                    <span class="icon">🎯</span>
+                    <h3>Комфорт для ребенка</h3>
+                    <p>Подбираем наиболее комфортный для ребенка формат занятий: индивидуально, в паре, в группе. Уроки структурны и визуально притягательны.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -466,7 +626,7 @@
         </section>
     </div>
 
-    <footer id="contact">
+    <footer>
         <div class="container">
             <h2 class="section-title">Давайте знакомиться!</h2>
             <p>Напишите мне, чтобы обсудить цели вашего ребенка и подобрать удобное время.</p>
@@ -485,5 +645,202 @@
         </div>
     </footer>
 
+    <script>
+        // СЕКЦИИ КОЛЕСА (Обновлены цвета)
+        const sectors = [
+            { label: "СКИДКА 10% (Мес)", text: "Скидка на месяц 10%" },
+            { label: "БЕСПЛАТНЫЙ УРОК", text: "Бесплатный урок" }, 
+            { label: "СКИДКА 25% (Мес)", text: "Скидка на месяц 25%" },
+            { label: "СКИДКА 10% (Кино)", text: "Скидка на киноклуб 10%" },
+            { label: "СКИДКА 25% (Кино)", text: "Скидка на киноклуб 25%" }
+        ];
+
+        // Инициализация переменных и DOM элементов
+        const trigger = document.getElementById('gameTrigger');
+        const modal = document.getElementById('gameModal');
+        const closeBtn = document.getElementById('closeModal');
+        const wheelCanvas = document.getElementById('wheel');
+        const ctx = wheelCanvas.getContext('2d');
+        const spinBtn = document.getElementById('spinBtn');
+        const resultScreen = document.getElementById('resultScreen');
+        const wheelScreen = document.getElementById('wheelScreen');
+        const prizeText = document.getElementById('prizeText');
+        const resetBtn = document.getElementById('resetCoupon'); 
+        
+        // **ЛОГИКА СКРЫТИЯ КНОПКИ СБРОСА**
+        const urlParams = new URLSearchParams(window.location.search);
+        const isTestingMode = urlParams.get('test') === 'true';
+
+        if (isTestingMode) {
+            resetBtn.style.display = 'block';
+        } else {
+            resetBtn.style.display = 'none'; 
+        }
+        // **********************************
+
+        let hasSpun = localStorage.getItem('elena_wheel_spun') === 'true';
+        let storedPrize = localStorage.getItem('elena_wheel_prize');
+
+        const diameter = wheelCanvas.width;
+        const radius = diameter / 2;
+        const PI = Math.PI;
+        const TAU = 2 * PI;
+        const arc = TAU / sectors.length;
+
+        // 1. Отрисовка колеса (ИСПРАВЛЕНА: Логика поворота текста)
+        function drawWheel() {
+            // Получаем актуальные значения CSS переменных для цветов
+            const rootStyle = getComputedStyle(document.documentElement);
+            const color1 = rootStyle.getPropertyValue('--wheel-color-1').trim(); // Бирюзовый
+            const color2 = rootStyle.getPropertyValue('--wheel-color-2').trim(); // Синий
+            const color3 = rootStyle.getPropertyValue('--wheel-color-3').trim(); // Золотой
+            
+            // Задаем порядок цветов
+            const sectorColors = [color1, color3, color2, color1, color2]; 
+
+            sectors.forEach((sector, i) => {
+                const startAngle = i * arc;
+                const endAngle = startAngle + arc;
+                
+                ctx.save();
+                
+                // Рисуем сектор
+                ctx.beginPath();
+                ctx.fillStyle = sectorColors[i]; 
+                ctx.moveTo(radius, radius);
+                ctx.arc(radius, radius, radius, startAngle, endAngle);
+                ctx.lineTo(radius, radius);
+                ctx.fill();
+                
+                // Рисуем текст
+                ctx.translate(radius, radius);
+                
+                // Поворачиваем холст до середины сектора
+                const angle = startAngle + arc / 2;
+                ctx.rotate(angle); 
+                
+                ctx.textAlign = "right"; 
+                ctx.fillStyle = "#110A1F"; // Темный текст
+                ctx.font = "bold 14px Fredoka";
+                
+                // Рисуем текст на небольшом расстоянии от центра
+                // Позиция Y = 10 (небольшое смещение)
+                // Позиция X = radius - 15 (ближе к краю)
+                ctx.fillText(sector.label, radius - 15, 10); 
+                
+                ctx.restore();
+            });
+        }
+        
+        drawWheel();
+
+        // 2. Логика открытия модалки
+        function checkAndOpenModal() {
+            if (hasSpun && storedPrize) {
+                showWin(storedPrize, false);
+            } else {
+                wheelScreen.style.display = 'block';
+                resultScreen.style.display = 'none';
+                spinBtn.disabled = false;
+                spinBtn.textContent = "КРУТИТЬ!";
+            }
+            modal.classList.add('active');
+        }
+
+        trigger.addEventListener('click', checkAndOpenModal);
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('active');
+        });
+
+        // 3. Логика вращения
+        spinBtn.addEventListener('click', () => {
+            if (hasSpun) return;
+
+            spinBtn.disabled = true;
+            spinBtn.textContent = "УДАЧА...";
+
+            const sectorIndex = Math.floor(Math.random() * sectors.length);
+            const selectedSector = sectors[sectorIndex];
+            
+            const degreesPerSector = 360 / sectors.length;
+            const spins = 5; 
+            
+            // Устанавливаем целевое вращение так, чтобы указатель попал в середину сектора
+            // (360 * spins) - (target position)
+            const targetPosition = (sectorIndex * degreesPerSector) + (degreesPerSector / 2);
+            const targetRotation = (spins * 360) + (360 - targetPosition) + (Math.random() * 10 - 5); // Добавляем небольшую случайность
+            
+            wheelCanvas.style.transform = `rotate(${targetRotation}deg)`;
+
+            setTimeout(() => {
+                hasSpun = true;
+                localStorage.setItem('elena_wheel_spun', 'true');
+                localStorage.setItem('elena_wheel_prize', selectedSector.text);
+                
+                showWin(selectedSector.text, true);
+            }, 5000); 
+        });
+
+        function showWin(text, withConfetti) {
+            wheelScreen.style.display = 'none';
+            resultScreen.style.display = 'block';
+            prizeText.textContent = text;
+            
+            let code = localStorage.getItem('elena_wheel_code');
+            if(!code) {
+                 code = "WIN-" + Math.floor(1000 + Math.random() * 9000);
+                 localStorage.setItem('elena_wheel_code', code);
+            }
+            document.getElementById('uniqueCode').textContent = code;
+
+            if (withConfetti) {
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#1ABC9C', '#3498DB', '#FFD700']
+                });
+            }
+        }
+
+        // 4. Скачивание купона
+        document.getElementById('downloadCoupon').addEventListener('click', () => {
+            const couponElement = document.getElementById('coupon');
+            
+            html2canvas(couponElement, {
+                scale: 2,
+                backgroundColor: null
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'SuperEnglish_Coupon.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        });
+        
+        // 5. ЛОГИКА СБРОСА КУПОНА (для тестирования)
+        resetBtn.addEventListener('click', () => {
+            if (!isTestingMode) return; 
+
+            localStorage.removeItem('elena_wheel_spun');
+            localStorage.removeItem('elena_wheel_prize');
+            localStorage.removeItem('elena_wheel_code');
+            
+            hasSpun = false;
+            storedPrize = null;
+            
+            // Сброс визуального состояния колеса
+            wheelCanvas.style.transform = 'rotate(0deg)';
+            
+            checkAndOpenModal();
+            alert('Данные колеса сброшены! Теперь вы можете крутить его заново.');
+        });
+
+    </script>
 </body>
 </html>
