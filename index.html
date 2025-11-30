@@ -196,7 +196,6 @@
             background-image: url('https://www.dropbox.com/scl/fi/8fh08g14chp9g2jncpc2t/IMG_20251124_130918.png?rlkey=iktjfrc7fetud1toome697boq&st=t661i2i6&raw=1');
             background-size: cover;
             background-position: center; 
-            /* Анимация float удалена */
         }
 
         /* --- СТАТИСТИКА --- */
@@ -369,7 +368,7 @@
             animation: none; 
         }
 
-        /* МОДАЛЬНОЕ ОКНО КОЛЕСА */
+        /* МОДАЛЬНОЕ ОКНО КОЛЕСА (АДАПТИВНОСТЬ УЛУЧШЕНА) */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.8); z-index: 2000; display: none; 
@@ -380,14 +379,15 @@
             background: var(--bg); border: 3px solid var(--secondary);
             box-shadow: 0 0 40px rgba(52, 152, 219, 0.4); padding: 30px;
             border-radius: 15px; text-align: center; position: relative;
-            max-width: 90%; 
+            max-width: 500px; /* Лимит для десктопа */
+            width: 90%; 
         }
         .wheel-wrapper {
             position: relative; 
             margin: 20px auto; 
-            width: 320px; height: 320px;
+            width: 300px; /* Фиксированный размер для Canvas */
+            height: 300px;
             border-radius: 50%;
-            /* Рамка удалена */
         }
         .wheel-pointer {
             position: absolute; top: -10px; left: 50%;
@@ -399,6 +399,9 @@
         }
         #wheel {
             transition: transform 5s cubic-bezier(0.2, 0.7, 0.4, 1);
+            /* Размеры задаются в JS, но для надежности добавим тут */
+            width: 300px;
+            height: 300px;
         }
         .spin-btn {
             background-color: var(--secondary); color: var(--white);
@@ -456,6 +459,16 @@
             .nav-links a { font-size: 0.9rem; }
             html { scroll-padding-top: 110px; } 
             body { padding-top: 80px; } 
+            
+            /* Адаптивность колеса на маленьких экранах */
+            .wheel-wrapper {
+                width: 280px; 
+                height: 280px;
+            }
+            #wheel {
+                width: 280px; 
+                height: 280px;
+            }
         }
     </style>
 </head>
@@ -486,7 +499,7 @@
                 
                 <div class="wheel-wrapper">
                     <div class="wheel-pointer"></div>
-                    <canvas id="wheel" width="320" height="320"></canvas>
+                    <canvas id="wheel" width="300" height="300"></canvas>
                 </div>
                 
                 <button class="spin-btn" id="spinBtn">КРУТИТЬ!</button>
@@ -679,6 +692,12 @@
         const modal = document.getElementById('gameModal');
         const closeBtn = document.getElementById('closeModal');
         const wheelCanvas = document.getElementById('wheel');
+        
+        // Устанавливаем размеры Canvas в JS, чтобы гарантировать совпадение с CSS
+        const baseSize = 300; 
+        wheelCanvas.width = baseSize; 
+        wheelCanvas.height = baseSize; 
+        
         const ctx = wheelCanvas.getContext('2d');
         const spinBtn = document.getElementById('spinBtn');
         const resultScreen = document.getElementById('resultScreen');
@@ -707,7 +726,6 @@
         
         // Получаем актуальные значения CSS переменных для цветов
         const rootStyle = getComputedStyle(document.documentElement);
-        // !!! ИСПРАВЛЕНИЕ: Извлекаем цвет фона для линий Canvas
         const colorBg = rootStyle.getPropertyValue('--bg').trim(); 
         
         const colorPurple = rootStyle.getPropertyValue('--wheel-color-purple').trim();
@@ -717,11 +735,10 @@
         const colorGreen = rootStyle.getPropertyValue('--wheel-color-green').trim();
         const colorBlue = rootStyle.getPropertyValue('--wheel-color-blue').trim();
         
-        // Задаем порядок цветов (6 цветов)
         const sectorColors = [colorPurple, colorPink, colorTurquoise, colorYellow, colorGreen, colorBlue]; 
 
 
-        // 1. Отрисовка колеса (с горизонтальным текстом)
+        // 1. Отрисовка колеса (ИСПРАВЛЕННЫЙ ТЕКСТ)
         function drawWheel() {
             sectors.forEach((sector, i) => {
                 const startAngle = i * arc;
@@ -737,32 +754,31 @@
                 ctx.lineTo(radius, radius);
                 ctx.fill();
                 
-                // Рисуем текст
+                // Начинаем рисовать текст
                 ctx.translate(radius, radius);
                 
                 // Поворачиваем холст к середине сектора
                 const angle = startAngle + arc / 2;
                 ctx.rotate(angle); 
                 
-                ctx.textAlign = "right"; 
+                ctx.textAlign = "right"; // Текст будет идти от центра наружу
                 ctx.fillStyle = "#110A1F"; 
-                ctx.font = "bold 16px Nunito"; 
+                ctx.font = "bold 14px Nunito"; // Уменьшенный шрифт
                 
-                // Разделяем текст на строки
                 const words = sector.label.split(' ');
                 const lineSpacing = 16;
                 
-                // Вычисляем начальную позицию Y
+                // Корректируем начальную позицию Y для вертикального центрирования
                 let startY = - (words.length * lineSpacing) / 2 + (lineSpacing * 0.8);
                 
                 for (let j = 0; j < words.length; j++) {
                     
-                    // Поворачиваем текст на 90 градусов (PI/2), чтобы он был горизонтальным относительно радиуса
-                    ctx.save();
-                    ctx.rotate(PI / 2); 
+                    // !!! Ключевое ИСПРАВЛЕНИЕ: Мы не поворачиваем текст на 90 градусов.
+                    // Текст остается горизонтальным относительно радиуса.
                     
-                    // Рисуем, отступая от центра 
-                    const textX = radius * 0.7; 
+                    ctx.save();
+                    // Текст теперь ближе к краю, отступ 80% радиуса
+                    const textX = radius * 0.8; 
                     ctx.fillText(words[j], textX, startY + (j * lineSpacing)); 
                     
                     ctx.restore();
@@ -770,8 +786,8 @@
                 
                 ctx.restore();
                 
-                // Рисуем разделительные линии 
-                ctx.strokeStyle = colorBg; // !!! ИСПРАВЛЕНИЕ: Используем переменную JS
+                // Рисуем разделительные линии (ИСПРАВЛЕННЫЙ ЦВЕТ)
+                ctx.strokeStyle = colorBg; // Используем переменную JS
                 ctx.lineWidth = 2;
                 ctx.beginPath();
                 ctx.moveTo(radius, radius);
@@ -783,7 +799,7 @@
         
         drawWheel();
 
-        // 2. Логика открытия модалки
+        // 2. Логика открытия модалки (ИСПРАВЛЕНАЯ ПРИВЯЗКА)
         function checkAndOpenModal() {
             if (hasSpun && storedPrize) {
                 showWin(storedPrize, false);
@@ -797,7 +813,7 @@
             modal.classList.add('active');
         }
 
-        // *** ПРИВЯЗКА КНОПКИ: Работает корректно ***
+        // Привязка кнопки-триггера
         if (trigger) {
              trigger.addEventListener('click', checkAndOpenModal);
         }
