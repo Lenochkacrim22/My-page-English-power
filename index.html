@@ -24,7 +24,7 @@
             --white: #ffffff;
             --nav-height: 70px; 
             
-            /* Цвета для колеса */
+            /* Цвета для колеса (Теперь используются в JS) */
             --wheel-color-1: var(--accent); 
             --wheel-color-2: var(--secondary); 
             --wheel-color-3: #FFD700; /* gold */
@@ -365,7 +365,9 @@
             max-width: 90%; 
         }
         .wheel-wrapper {
-            position: relative; margin: 20px auto;
+            position: relative; 
+            /* *** ИСПРАВЛЕНИЕ: Центрирование колеса *** */
+            margin: 20px auto; 
             width: 320px; height: 320px;
             border-radius: 50%;
             border: 5px solid var(--accent);
@@ -646,7 +648,7 @@
     </footer>
 
     <script>
-        // СЕКЦИИ КОЛЕСА (Обновлены цвета)
+        // СЕКЦИИ КОЛЕСА
         const sectors = [
             { label: "СКИДКА 10% (Мес)", text: "Скидка на месяц 10%" },
             { label: "БЕСПЛАТНЫЙ УРОК", text: "Бесплатный урок" }, 
@@ -676,7 +678,6 @@
         } else {
             resetBtn.style.display = 'none'; 
         }
-        // **********************************
 
         let hasSpun = localStorage.getItem('elena_wheel_spun') === 'true';
         let storedPrize = localStorage.getItem('elena_wheel_prize');
@@ -686,18 +687,19 @@
         const PI = Math.PI;
         const TAU = 2 * PI;
         const arc = TAU / sectors.length;
+        
+        // Получаем актуальные значения CSS переменных для цветов
+        const rootStyle = getComputedStyle(document.documentElement);
+        const color1 = rootStyle.getPropertyValue('--wheel-color-1').trim(); // Бирюзовый
+        const color2 = rootStyle.getPropertyValue('--wheel-color-2').trim(); // Синий
+        const color3 = rootStyle.getPropertyValue('--wheel-color-3').trim(); // Золотой
+        
+        // Задаем порядок цветов
+        const sectorColors = [color1, color3, color2, color1, color2]; 
 
-        // 1. Отрисовка колеса (ИСПРАВЛЕНА: Логика поворота текста)
+
+        // 1. Отрисовка колеса (ФИНАЛЬНО ИСПРАВЛЕНА: Цвета и Логика поворота текста)
         function drawWheel() {
-            // Получаем актуальные значения CSS переменных для цветов
-            const rootStyle = getComputedStyle(document.documentElement);
-            const color1 = rootStyle.getPropertyValue('--wheel-color-1').trim(); // Бирюзовый
-            const color2 = rootStyle.getPropertyValue('--wheel-color-2').trim(); // Синий
-            const color3 = rootStyle.getPropertyValue('--wheel-color-3').trim(); // Золотой
-            
-            // Задаем порядок цветов
-            const sectorColors = [color1, color3, color2, color1, color2]; 
-
             sectors.forEach((sector, i) => {
                 const startAngle = i * arc;
                 const endAngle = startAngle + arc;
@@ -715,18 +717,34 @@
                 // Рисуем текст
                 ctx.translate(radius, radius);
                 
-                // Поворачиваем холст до середины сектора
+                // Поворачиваем холст к середине сектора
                 const angle = startAngle + arc / 2;
                 ctx.rotate(angle); 
                 
                 ctx.textAlign = "right"; 
                 ctx.fillStyle = "#110A1F"; // Темный текст
-                ctx.font = "bold 14px Fredoka";
+                ctx.font = "bold 13px Fredoka"; // Слегка уменьшил шрифт для лучшей читаемости
                 
-                // Рисуем текст на небольшом расстоянии от центра
-                // Позиция Y = 10 (небольшое смещение)
-                // Позиция X = radius - 15 (ближе к краю)
-                ctx.fillText(sector.label, radius - 15, 10); 
+                // Разделяем текст, если он длинный
+                const words = sector.label.split(' ');
+                let line = '';
+                const lineSpacing = 16;
+                let yPos = - (words.length / 2) * lineSpacing + 10;
+                
+                // Проходим по словам и рисуем их построчно
+                for (let j = 0; j < words.length; j++) {
+                    const testLine = line + words[j] + ' ';
+                    
+                    // Поворачиваем текст на 90 градусов (PI/2), чтобы он был горизонтальным относительно радиуса
+                    ctx.save();
+                    ctx.rotate(PI / 2); 
+                    
+                    // Рисуем, отступая от центра 
+                    ctx.fillText(words[j], radius - 20, yPos); 
+                    
+                    ctx.restore();
+                    yPos += lineSpacing;
+                }
                 
                 ctx.restore();
             });
@@ -771,9 +789,9 @@
             const spins = 5; 
             
             // Устанавливаем целевое вращение так, чтобы указатель попал в середину сектора
-            // (360 * spins) - (target position)
             const targetPosition = (sectorIndex * degreesPerSector) + (degreesPerSector / 2);
-            const targetRotation = (spins * 360) + (360 - targetPosition) + (Math.random() * 10 - 5); // Добавляем небольшую случайность
+            // 90 градусов - это угол указателя (вверх), поэтому мы добавляем его к 360 - targetPosition
+            const targetRotation = (spins * 360) + (360 - targetPosition) + 90 + (Math.random() * 10 - 5); 
             
             wheelCanvas.style.transform = `rotate(${targetRotation}deg)`;
 
@@ -803,7 +821,7 @@
                     particleCount: 150,
                     spread: 70,
                     origin: { y: 0.6 },
-                    colors: ['#1ABC9C', '#3498DB', '#FFD700']
+                    colors: [color1, color2, color3]
                 });
             }
         }
